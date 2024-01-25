@@ -1,3 +1,5 @@
+/*Encuentralo de nuevo*/
+
 import './App.css';
 import {useState} from "react";
 import Axios from "axios";
@@ -6,30 +8,30 @@ import Swal from 'sweetalert2';
 
 function App() {
 
-  const [nombre, setNombre] = useState("");
-  const [edad, setEdad] = useState();
-  const [pais, setPais] = useState("");
-  const [cargo, setCargo] = useState("");
-  const [anios, setAnios] = useState();
+  const [name, setName] = useState("");
+  const [age, setAge] = useState();
+  const [country, setCountry] = useState("");
+  const [workPosition, setWorkPosition] = useState("");
+  const [yearsWork, setYearsWork] = useState();
   const [id, setId] = useState();
   
-  const [editar, setEditar] = useState(false);
+  const [edit, setEdit] = useState(false);
 
-  const [empleadosList, setEmpleados] = useState([]);
+  const [employeesList, setEmployees] = useState([]);
 
   const add = () => {
     Axios.post("http://localhost:3001/create", {
-      nombre:nombre,
-      edad:edad,
-      pais:pais,
-      cargo:cargo,
-      anios:anios
+      name:name,
+      age:age,
+      country:country,
+      workPosition:workPosition,
+      yearsWork:yearsWork
     }).then(() => {
-      getEmpleados();
-      limpiarCampos();
+      getEmployees();
+      cleanSpaces();
       Swal.fire({
-        title: "<strong>!Registro Exito¡</strong>",
-        html: "<i>!El empleado <strong>" + nombre + "</strong> fue registrado con Exito¡</i>",
+        title: "<strong>!Success Registration¡</strong>",
+        html: "<i>!The employee <strong>" + name + "</strong> was successfully registered¡</i>",
         icon: 'success',
         timer: 3000
       })
@@ -37,7 +39,7 @@ function App() {
       Swal.fire({
         icon: 'error',
         title: 'Oops...',
-        text: JSON.parse(JSON.stringify(error)).message === "Network Error"? "Intente más tarde": JSON.parse(JSON.stringify(error)).message
+        text: JSON.parse(JSON.stringify(error)).message === "Network Error"? "Try again later": JSON.parse(JSON.stringify(error)).message
       });
     });
   }
@@ -45,17 +47,17 @@ function App() {
   const update = () => {
     Axios.put("http://localhost:3001/update", {
       id:id,
-      nombre:nombre,
-      edad:edad,
-      pais:pais,
-      cargo:cargo,
-      anios:anios
+      name:name,
+      age:age,
+      country:country,
+      workPosition:workPosition,
+      yearsWork:yearsWork
     }).then(() => {
-      getEmpleados();
-      limpiarCampos();
+      getEmployees();
+      cleanSpaces();
       Swal.fire({
-        title: "<strong>!Actualizacion Exita¡</strong>",
-        html: "<i>!El empleado <strong>" + nombre + "</strong> fue actualizado con Exito¡</i>",
+        title: "<strong>!Successful Update¡</strong>",
+        html: "<i>! <strong>" + name + "</strong> was successfully updated¡</i>",
         icon: 'success',
         timer: 3000
       })
@@ -63,28 +65,28 @@ function App() {
       Swal.fire({
         icon: 'error',
         title: 'Oops...',
-        text: JSON.parse(JSON.stringify(error)).message === "Network Error"? "Intente más tarde": JSON.parse(JSON.stringify(error)).message
+        text: JSON.parse(JSON.stringify(error)).message === "Network Error"? "Try again later": JSON.parse(JSON.stringify(error)).message
       });
     });
   }
 
-  const deleteEmple = (val) => {
+  const deleteEmployees = (val) => {
     Swal.fire({
-      title: 'Confirmar Eliminado',
-      html: "<i>Real mente desea eliminar a <strong>" + val.nombre + "</strong> ?</i>",
+      title: 'Confirm Deleted',
+      html: "<i>Realmente wishes to eliminate <strong>" + val.name + "</strong> ?</i>",
       icon: 'warning',
       showCancelButton: true,
       confirmButtonColor: '#3085d6',
       cancelButtonColor: '#d33',
-      confirmButtonText: 'Si, eliminarlo',
+      confirmButtonText: 'Yes, remove it',
     }).then((result) => {
       if (result.isConfirmed) {
         Axios.delete(`http://localhost:3001/delete/${val.id}`).then(() => {
-          getEmpleados();
-          limpiarCampos();
+          getEmployees();
+          cleanSpaces();
           Swal.fire({
             icon: 'success',
-            title: '<strong>' + val.nombre + '</strong> fue eliminado.',
+            title: '<strong>' + val.name + '</strong> was eliminated.',
             showConfirmButton: false,
             timer: 2000
           });
@@ -92,101 +94,101 @@ function App() {
           Swal.fire({
             icon: 'error',
             title: 'Oops...',
-            text: 'No se logro eliminar el empleado',
-            footer: JSON.parse(JSON.stringify(error)).message === "Network Error"? "Intente más tarde": JSON.parse(JSON.stringify(error)).message
+            text: 'Failed to remove the employee',
+            footer: JSON.parse(JSON.stringify(error)).message === "Network Error"? "Try again later": JSON.parse(JSON.stringify(error)).message
           });
         });
       }
     });
   }
 
-  const limpiarCampos = () => {
-    setNombre("");
-    setEdad("");
-    setPais("");
-    setCargo("");
-    setAnios("");
-    setEditar(false);
+  const cleanSpaces = () => {
+    setName("");
+    setAge("");
+    setCountry("");
+    setWorkPosition("");
+    setYearsWork("");
+    setEdit(false);
   }
 
-  const editarEmpleado = (val) =>{
-    setEditar (true);
-    setNombre(val.nombre);
-    setEdad(val.edad);
-    setPais(val.pais);
-    setCargo(val.cargo);
-    setAnios(val.anios);
+  const editEmployee = (val) =>{
+    setEdit (true);
+    setName(val.name);
+    setAge(val.age);
+    setCountry(val.country);
+    setWorkPosition(val.workPosition);
+    setYearsWork(val.yearsWork);
     setId(val.id);
   }
 
-  const getEmpleados = () => {
-    Axios.get("http://localhost:3001/empleados",).then((response) => {
-      setEmpleados(response.data);
+  const getEmployees = () => {
+    Axios.get("http://localhost:3001/employees",).then((response) => {
+      setEmployees(response.data);
     })
   }
 
-  getEmpleados();
+  getEmployees();
 
   return (
     <div className="container">
       <div className="card text-center">
         <div className="card-header">
-          Gestion de Empleados
+          Employee Management
         </div>
         <div className="card-body">
           <div className="input-group mb-3">
-            <span className="input-group-text" id="basic-addon1">Nombre:</span>
-            <input type="text" value={nombre}
+            <span className="input-group-text" id="basic-addon1">Name:</span>
+            <input type="text" value={name}
               onChange={(event) => {
-                setNombre(event.target.value);
+                setName(event.target.value);
               }}
-            className="form-control" placeholder="Ingrese su nombre" aria-label="Username" aria-describedby="basic-addon1"/>
+            className="form-control" placeholder="Enter your name" aria-label="Username" aria-describedby="basic-addon1"/>
           </div>
               
           <div className="input-group mb-3">
-            <span className="input-group-text" id="basic-addon1">Edad:</span>
-            <input type="number" value={edad}
+            <span className="input-group-text" id="basic-addon1">Age:</span>
+            <input type="number" value={age}
               onChange={(event) => {
-                setEdad(event.target.value);
+                setAge(event.target.value);
               }}
-            className="form-control" placeholder="Ingrese su edad" aria-label="Username" aria-describedby="basic-addon1"/>
+            className="form-control" placeholder="Enter your age" aria-label="Username" aria-describedby="basic-addon1"/>
           </div>
               
           <div className="input-group mb-3">
-            <span className="input-group-text" id="basic-addon1">Pais:</span>
-            <input type="text" value={pais}
+            <span className="input-group-text" id="basic-addon1">Country:</span>
+            <input type="text" value={country}
               onChange={(event) => {
-                setPais(event.target.value);
+                setCountry(event.target.value);
               }}
-            className="form-control" placeholder="Ingrese su pais" aria-label="Username" aria-describedby="basic-addon1"/>
+            className="form-control" placeholder="Enter your country" aria-label="Username" aria-describedby="basic-addon1"/>
           </div>
               
           <div className="input-group mb-3">
-            <span className="input-group-text" id="basic-addon1">Cargo:</span>
-            <input type="text" value={cargo}
+            <span className="input-group-text" id="basic-addon1">Work Position:</span>
+            <input type="text" value={workPosition}
               onChange={(event) => {
-                setCargo(event.target.value);
+                setWorkPosition(event.target.value);
               }}
-            className="form-control" placeholder="Ingrese su cargo" aria-label="Username" aria-describedby="basic-addon1"/>
+            className="form-control" placeholder="Enter your work position" aria-label="Username" aria-describedby="basic-addon1"/>
           </div>
               
           <div className="input-group mb-3">
-            <span className="input-group-text" id="basic-addon1">Años de experiencia:</span>
-            <input type="number" value={anios}
+            <span className="input-group-text" id="basic-addon1">Years of experience:</span>
+            <input type="number" value={yearsWork}
               onChange={(event) => {
-                setAnios(event.target.value);
+                setYearsWork(event.target.value);
               }}
-            className="form-control" placeholder="Ingrese los años" aria-label="Username" aria-describedby="basic-addon1"/>
+            className="form-control" placeholder="Enter the years" aria-label="Username" aria-describedby="basic-addon1"/>
           </div>
         </div>
         <div className="card-footer text-muted">
           {
-            editar == true?
+            edit === true?
             <div>
-              <button className='btn btn-warning m-2' onClick={update}>Actualizar</button>
-              <button className='btn btn-info m-2' onClick={limpiarCampos}>Cancelar</button>
+              <button className='btn btn-warning m-2' onClick={update}>Update</button>
+              <button className='btn btn-info m-2' onClick={cleanSpaces}>Cancel</button>
             </div>
-            :<button className='btn btn-success' onClick={add}>Registrar</button>
+            :<button className='btn btn-success' onClick={add}>Register</button>
           }
         </div>
       </div>
@@ -195,34 +197,34 @@ function App() {
         <thead>
           <tr>
             <th scope="col">#</th>
-            <th scope="col">Nombre</th>
-            <th scope="col">Edad</th>
-            <th scope="col">Pais</th>
-            <th scope="col">Cargo</th>
-            <th scope="col">Experiencia</th>
-            <th scope="col">Acciones</th>
+            <th scope="col">Name</th>
+            <th scope="col">Age</th>
+            <th scope="col">Country</th>
+            <th scope="col">Work Position</th>
+            <th scope="col">Experience</th>
+            <th scope="col">Shares</th>
           </tr>
         </thead>
         <tbody>
           {
-            empleadosList.map((val,key) => {
+            employeesList.map((val,key) => {
               return <tr key={val.id}>
                         <th>{val.id}</th>
-                        <td>{val.nombre}</td>
-                        <td>{val.edad}</td>
-                        <td>{val.pais}</td>
-                        <td>{val.cargo}</td>
-                        <td>{val.anios}</td>
+                        <td>{val.name}</td>
+                        <td>{val.age}</td>
+                        <td>{val.country}</td>
+                        <td>{val.workPosition}</td>
+                        <td>{val.yearsWork}</td>
                         <td>
                         <div className="btn-group" role="group" aria-label="Basic example">
                           <button type="button" 
                             onClick={() => {
-                              editarEmpleado(val);
+                              editEmployee(val);
                             }}
-                          className="btn btn-info">Editar</button>
+                          className="btn btn-info">Edit</button>
                           <button type="button" onClick = {() => {
-                            deleteEmple(val);
-                          }} className="btn btn-danger">Eliminar</button>
+                            deleteEmployees(val);
+                          }} className="btn btn-danger">Delete</button>
                         </div>
                         </td>
                       </tr>

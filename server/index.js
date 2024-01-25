@@ -9,18 +9,18 @@ app.use(express.json());
 const db = mysql.createConnection({
     host:"localhost",
     user:"root",
-    password:"Orula1907*",
-    database:"empleados_crud"
+    password:"",
+    database:"employees_crud"
 });
 
 app.post("/create", (req, res) => {
-    const nombre = req.body.nombre;
-    const edad = req.body.edad;
-    const pais = req.body.pais;
-    const cargo = req.body.cargo;
-    const anios = req.body.anios;
+    const name = req.body.name;
+    const age = req.body.age;
+    const country = req.body.country;
+    const workPosition = req.body.workPosition;
+    const yearsWork = req.body.yearsWork;
 
-    db.query('INSERT INTO empleados (nombre, edad, pais, cargo, anios) VALUES (?, ?, ?, ?, ?)', [nombre, edad, pais, cargo, anios],
+    db.query('INSERT INTO employees (name, age, country, workPosition, yearsWork) VALUES (?, ?, ?, ?, ?)', [name, age, country, workPosition, yearsWork],
     (err, result) => {
         if (err) {
             console.log(err);
@@ -31,8 +31,8 @@ app.post("/create", (req, res) => {
     );
 });
 
-app.get("/empleados", (req, res) => {
-    db.query('SELECT * FROM empleados',
+app.get("/employees", (req, res) => {
+    db.query('SELECT * FROM employees',
     (err, result) => {
         if (err) {
             console.log(err);
@@ -45,13 +45,13 @@ app.get("/empleados", (req, res) => {
 
 app.put("/update", (req, res) => {
     const id = req.body.id;
-    const nombre = req.body.nombre;
-    const edad = req.body.edad;
-    const pais = req.body.pais;
-    const cargo = req.body.cargo;
-    const anios = req.body.anios;
+    const name = req.body.name;
+    const age = req.body.age;
+    const country = req.body.country;
+    const workPosition = req.body.workPosition;
+    const yearsWork = req.body.yearsWork;
 
-    db.query('UPDATE empleados SET nombre=?, edad=?, pais=?, cargo=?, anios=? WHERE id=?', [nombre, edad, pais, cargo, anios, id],
+    db.query('UPDATE employees SET name=?, age=?, country=?, workPosition=?, yearsWork=? WHERE id=?', [name, age, country, workPosition, yearsWork, id],
     (err, result) => {
         if (err) {
             console.log(err);
@@ -65,7 +65,7 @@ app.put("/update", (req, res) => {
 app.delete("/delete/:id", (req, res) => {
     const id = req.params.id;
 
-    db.query('DELETE FROM empleados WHERE id=?',id,
+    db.query('DELETE FROM employees WHERE id=?',id,
     (err, result) => {
         if (err) {
             console.log(err);
@@ -77,5 +77,5 @@ app.delete("/delete/:id", (req, res) => {
 });
 
 app.listen(3001, () => {
-    console.log("Corriendo en el puerto 3001")
+    console.log("Running in port 3001")
 })
