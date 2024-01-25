@@ -29,4 +29,7 @@
 8. If we want to delete any record, we must press the delete button, then we will be asked to confirm the deletion.
 
 ![imagen](https://github.com/LuisFCosteC/Form-with-React-MySql-NodeJs-Bootstrap/assets/117328283/e522b2db-f760-4254-8f75-0565b938e537)
+
+9. When you confirm the deletion, a successful deletion message will appear.
+
 ![imagen](https://github.com/LuisFCosteC/Form-with-React-MySql-NodeJs-Bootstrap/assets/117328283/4274a20c-ac76-457b-83ef-f8e12d15254e)
