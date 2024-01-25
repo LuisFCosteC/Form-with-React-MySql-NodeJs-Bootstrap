@@ -33,3 +33,7 @@
 9. When you confirm the deletion, a successful deletion message will appear.
 
 ![imagen](https://github.com/LuisFCosteC/Form-with-React-MySql-NodeJs-Bootstrap/assets/117328283/4274a20c-ac76-457b-83ef-f8e12d15254e)
+
+10. If we want to perform: A registration, An update or A deletion. and the server is down we will get the following message and the request will not be successful.
+
+![imagen](https://github.com/LuisFCosteC/Form-with-React-MySql-NodeJs-Bootstrap/assets/117328283/9c33c018-b02a-4d6d-890f-a6ece01b04f7)
