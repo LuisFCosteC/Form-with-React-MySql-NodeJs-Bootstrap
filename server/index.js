@@ -6,35 +6,38 @@ const cors = require('cors');
 const app = express();
 const PORT = process.env.PORT || 3001;
 
-// ─── Middlewares ───────────────────────────────────────────────────────────────
+// ─── CORS ──────────────────────────────────────────────────────────────────────
+// Permite cualquier origen en Vercel (ajusta CLIENT_URL en producción si quieres restringirlo)
+const allowedOrigins = process.env.CLIENT_URL
+  ? process.env.CLIENT_URL.split(',').map(o => o.trim())
+  : true; // true = cualquier origen (útil en desarrollo/serverless)
+
 app.use(cors({
-  origin: process.env.CLIENT_URL || 'http://localhost:3000',
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  allowedHeaders: ['Content-Type']
+  origin: allowedOrigins,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true
 }));
 app.use(express.json());
 
 // ─── DB Pool ───────────────────────────────────────────────────────────────────
-const pool = mysql.createPool({
-  host:     process.env.DB_HOST     || 'localhost',
-  user:     process.env.DB_USER     || 'root',
-  password: process.env.DB_PASSWORD || '',
-  database: process.env.DB_NAME     || 'employees_crud',
-  waitForConnections: true,
-  connectionLimit: 10,
-  queueLimit: 0
-});
+let pool;
 
-// Test connection on startup
-pool.getConnection()
-  .then(conn => {
-    console.log('✅ MySQL connected successfully');
-    conn.release();
-  })
-  .catch(err => {
-    console.error('❌ MySQL connection error:', err.message);
-    console.warn('⚠️  Server running without DB — configure .env variables');
-  });
+function getPool() {
+  if (!pool) {
+    pool = mysql.createPool({
+      host:     process.env.DB_HOST     || 'localhost',
+      user:     process.env.DB_USER     || 'root',
+      password: process.env.DB_PASSWORD || '',
+      database: process.env.DB_NAME     || 'employees_crud',
+      ssl: process.env.DB_SSL === 'true' ? { rejectUnauthorized: true } : undefined,
+      waitForConnections: true,
+      connectionLimit: 5,  // Bajo para serverless (cada función tiene su propio pool)
+      queueLimit: 0
+    });
+  }
+  return pool;
+}
 
 // ─── Helper: validate required fields ─────────────────────────────────────────
 function validate(body) {
@@ -46,6 +49,38 @@ function validate(body) {
   return null;
 }
 
+// ─── Root — health check ───────────────────────────────────────────────────────
+app.get('/', (_req, res) => {
+  res.json({
+    status: 'ok',
+    name: 'StaffMatrix API',
+    version: '2.0.0',
+    timestamp: new Date().toISOString(),
+    endpoints: ['GET /employees', 'POST /create', 'PUT /update', 'DELETE /delete/:id', 'GET /health']
+  });
+});
+
+// ─── GET /health ───────────────────────────────────────────────────────────────
+app.get('/health', async (_req, res) => {
+  try {
+    await getPool().query('SELECT 1');
+    res.json({ status: 'ok', db: 'connected', timestamp: new Date().toISOString() });
+  } catch (e) {
+    res.status(503).json({ status: 'error', db: 'disconnected', error: e.message });
+  }
+});
+
+// ─── GET /employees ────────────────────────────────────────────────────────────
+app.get('/employees', async (_req, res) => {
+  try {
+    const [rows] = await getPool().query('SELECT * FROM employees ORDER BY id DESC');
+    res.json(rows);
+  } catch (e) {
+    console.error('GET /employees:', e.message);
+    res.status(500).json({ error: 'Error al obtener empleados' });
+  }
+});
+
 // ─── POST /create ──────────────────────────────────────────────────────────────
 app.post('/create', async (req, res) => {
   const err = validate(req.body);
@@ -53,7 +88,7 @@ app.post('/create', async (req, res) => {
 
   const { name, age, country, workPosition, yearsWork } = req.body;
   try {
-    const [result] = await pool.query(
+    const [result] = await getPool().query(
       'INSERT INTO employees (name, age, country, workPosition, yearsWork) VALUES (?, ?, ?, ?, ?)',
       [String(name).trim(), Number(age), String(country || '').trim(), String(workPosition).trim(), Number(yearsWork)]
     );
@@ -61,17 +96,6 @@ app.post('/create', async (req, res) => {
   } catch (e) {
     console.error('POST /create:', e.message);
     res.status(500).json({ error: 'Error al registrar empleado' });
-  }
-});
-
-// ─── GET /employees ────────────────────────────────────────────────────────────
-app.get('/employees', async (_req, res) => {
-  try {
-    const [rows] = await pool.query('SELECT * FROM employees ORDER BY id DESC');
-    res.json(rows);
-  } catch (e) {
-    console.error('GET /employees:', e.message);
-    res.status(500).json({ error: 'Error al obtener empleados' });
   }
 });
 
@@ -85,7 +109,7 @@ app.put('/update', async (req, res) => {
 
   const { name, age, country, workPosition, yearsWork } = req.body;
   try {
-    const [result] = await pool.query(
+    const [result] = await getPool().query(
       'UPDATE employees SET name=?, age=?, country=?, workPosition=?, yearsWork=? WHERE id=?',
       [String(name).trim(), Number(age), String(country || '').trim(), String(workPosition).trim(), Number(yearsWork), Number(id)]
     );
@@ -103,7 +127,7 @@ app.delete('/delete/:id', async (req, res) => {
   if (!id) return res.status(400).json({ error: 'ID inválido' });
 
   try {
-    const [result] = await pool.query('DELETE FROM employees WHERE id=?', [id]);
+    const [result] = await getPool().query('DELETE FROM employees WHERE id=?', [id]);
     if (result.affectedRows === 0) return res.status(404).json({ error: 'Empleado no encontrado' });
     res.json({ affectedRows: result.affectedRows });
   } catch (e) {
@@ -112,10 +136,10 @@ app.delete('/delete/:id', async (req, res) => {
   }
 });
 
-// ─── Health check ──────────────────────────────────────────────────────────────
-app.get('/health', (_req, res) => res.json({ status: 'ok', timestamp: new Date().toISOString() }));
+// ─── Start (solo en local; Vercel exporta el app directamente) ─────────────────
+if (require.main === module) {
+  app.listen(PORT, () => console.log(`🚀 Server on http://localhost:${PORT}`));
+}
 
-// ─── Start ─────────────────────────────────────────────────────────────────────
-app.listen(PORT, () => {
-  console.log(`🚀 Server listening on http://localhost:${PORT}`);
-});
+// Exporta app para Vercel Serverless
+module.exports = app;
