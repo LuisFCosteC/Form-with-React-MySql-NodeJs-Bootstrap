@@ -1,0 +1,348 @@
+:root {
+  --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+  
+  /* Light Mode Palette */
+  --bg-canvas: #f8fafc;
+  --bg-surface: #ffffff;
+  --bg-surface-elevated: #f1f5f9;
+  --bg-surface-muted: #f8fafc;
+  --border-color: #e2e8f0;
+  --border-strong: #cbd5e1;
+  --text-main: #0f172a;
+  --text-muted: #64748b;
+  --text-subtle: #94a3b8;
+  
+  /* Brand Accents */
+  --color-primary: #3b82f6;
+  --color-primary-hover: #2563eb;
+  --color-primary-subtle: #eff6ff;
+  --color-primary-text: #1d4ed8;
+  
+  --shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.06), 0 1px 2px rgba(15, 23, 42, 0.04);
+  --shadow-md: 0 4px 6px -1px rgba(15, 23, 42, 0.08), 0 2px 4px -2px rgba(15, 23, 42, 0.05);
+  --shadow-lg: 0 10px 15px -3px rgba(15, 23, 42, 0.08), 0 4px 6px -4px rgba(15, 23, 42, 0.03);
+}
+
+[data-bs-theme="dark"], .dark-theme {
+  /* Dark Mode Palette */
+  --bg-canvas: #090d16;
+  --bg-surface: #0f172a;
+  --bg-surface-elevated: #1e293b;
+  --bg-surface-muted: #172033;
+  --border-color: #1e293b;
+  --border-strong: #334155;
+  --text-main: #f8fafc;
+  --text-muted: #94a3b8;
+  --text-subtle: #64748b;
+  
+  --color-primary: #3b82f6;
+  --color-primary-hover: #60a5fa;
+  --color-primary-subtle: rgba(59, 130, 246, 0.15);
+  --color-primary-text: #93c5fd;
+
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -2px rgba(0, 0, 0, 0.3);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.5), 0 4px 6px -4px rgba(0, 0, 0, 0.3);
+  color-scheme: dark;
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: var(--bg-canvas);
+  color: var(--text-main);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  transition: background-color 0.25s ease, color 0.25s ease;
+}
+
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum";
+}
+
+.tracking-tight {
+  letter-spacing: -0.025em;
+}
+
+/* Base Surfaces & Cards */
+.card {
+  background-color: var(--bg-surface) !important;
+  border: 1px solid var(--border-color) !important;
+  color: var(--text-main);
+  border-radius: 12px;
+  transition: background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.bg-white {
+  background-color: var(--bg-surface) !important;
+}
+
+.bg-light {
+  background-color: var(--bg-surface-elevated) !important;
+  color: var(--text-main) !important;
+}
+
+.border-bottom {
+  border-bottom-color: var(--border-color) !important;
+}
+
+.border-top {
+  border-top-color: var(--border-color) !important;
+}
+
+.text-dark {
+  color: var(--text-main) !important;
+}
+
+.text-secondary, .text-muted {
+  color: var(--text-muted) !important;
+}
+
+/* Header & Navigation Tabs */
+.top-navbar {
+  background-color: var(--bg-surface) !important;
+  border-bottom: 1px solid var(--border-color) !important;
+  backdrop-filter: blur(8px);
+}
+
+.nav-tab-btn {
+  font-weight: 600;
+  font-size: 0.85rem;
+  padding: 0.4rem 0.85rem;
+  border-radius: 8px;
+  transition: all 0.15s ease;
+  border: 1px solid transparent;
+}
+
+.nav-tab-btn.active {
+  background-color: var(--color-primary) !important;
+  color: #ffffff !important;
+  box-shadow: 0 2px 4px rgba(37, 99, 235, 0.25);
+}
+
+.nav-tab-btn:not(.active) {
+  background-color: transparent;
+  color: var(--text-muted);
+}
+
+.nav-tab-btn:not(.active):hover {
+  background-color: var(--bg-surface-elevated);
+  color: var(--text-main);
+}
+
+/* Stat Cards */
+.stat-card {
+  border-radius: 12px;
+  background: var(--bg-surface);
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.stat-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-md);
+  border-color: var(--border-strong) !important;
+}
+
+.stat-icon-wrapper {
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Table Head and Rows - Fix white header issue in dark mode */
+.employee-table {
+  --bs-table-bg: transparent !important;
+  --bs-table-color: var(--text-main) !important;
+  --bs-table-hover-bg: var(--bg-surface-elevated) !important;
+  --bs-table-hover-color: var(--text-main) !important;
+  --bs-table-border-color: var(--border-color) !important;
+}
+
+.employee-table-head th {
+  background-color: var(--bg-surface-elevated) !important;
+  color: var(--text-muted) !important;
+  font-weight: 700 !important;
+  font-size: 0.76rem !important;
+  letter-spacing: 0.05em !important;
+  text-transform: uppercase !important;
+  border-bottom: 2px solid var(--border-strong) !important;
+  padding: 0.85rem 1rem !important;
+}
+
+.employee-row td {
+  padding: 0.85rem 1rem !important;
+  border-bottom: 1px solid var(--border-color) !important;
+  color: var(--text-main);
+}
+
+.employee-row {
+  transition: background-color 0.15s ease;
+}
+
+.employee-row:hover {
+  background-color: var(--bg-surface-elevated) !important;
+}
+
+/* Employee Grid Cards */
+.employee-card {
+  border-radius: 12px;
+  background: var(--bg-surface);
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.employee-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-lg);
+  border-color: var(--color-primary) !important;
+}
+
+/* Form Controls & Inputs */
+.form-control, .form-select, .input-group-text {
+  background-color: var(--bg-surface) !important;
+  border-color: var(--border-strong) !important;
+  color: var(--text-main) !important;
+  border-radius: 8px;
+}
+
+.form-control:focus, .form-select:focus {
+  border-color: var(--color-primary) !important;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2) !important;
+  color: var(--text-main) !important;
+}
+
+.form-control::placeholder {
+  color: var(--text-subtle) !important;
+}
+
+/* Progress bar */
+.progress {
+  background-color: var(--bg-surface-elevated) !important;
+  border-radius: 9999px;
+  overflow: hidden;
+}
+
+/* Badges */
+.badge.bg-light {
+  background-color: var(--bg-surface-elevated) !important;
+  color: var(--text-muted) !important;
+  border: 1px solid var(--border-color) !important;
+}
+
+/* Buttons */
+.btn-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.4rem 0.55rem;
+  border-radius: 6px;
+}
+
+/* Custom Country Dropdown */
+.custom-country-dropdown {
+  background-color: var(--bg-surface) !important;
+  border-color: var(--border-strong) !important;
+  box-shadow: var(--shadow-lg) !important;
+}
+
+.custom-country-dropdown .dropdown-item {
+  background-color: transparent;
+  color: var(--text-main);
+  transition: background-color 0.12s ease;
+}
+
+.custom-country-dropdown .dropdown-item:hover {
+  background-color: var(--bg-surface-elevated) !important;
+  color: var(--text-main);
+}
+
+.rotate-180 {
+  transform: rotate(180deg);
+}
+
+.transition-transform {
+  transition: transform 0.2s ease;
+}
+
+/* Modals */
+.modal-backdrop-custom {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(9, 13, 22, 0.7);
+  backdrop-filter: blur(6px);
+  z-index: 1050;
+  animation: fadeIn 0.18s ease-out;
+}
+
+.modal-card {
+  background-color: var(--bg-surface) !important;
+  border: 1px solid var(--border-strong) !important;
+  color: var(--text-main);
+  box-shadow: var(--shadow-lg);
+  animation: slideUp 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(16px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* SweetAlert Dark Mode Customization */
+.swal2-popup {
+  font-family: var(--font-sans) !important;
+  border-radius: 16px !important;
+  padding: 1.75rem !important;
+}
+
+[data-bs-theme="dark"] .swal2-popup,
+.swal2-dark-mode {
+  background-color: #0f172a !important;
+  color: #f8fafc !important;
+  border: 1px solid #334155 !important;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7) !important;
+}
+
+[data-bs-theme="dark"] .swal2-title,
+.swal2-dark-mode .swal2-title {
+  color: #f8fafc !important;
+}
+
+[data-bs-theme="dark"] .swal2-html-container,
+.swal2-dark-mode .swal2-html-container {
+  color: #cbd5e1 !important;
+}
+
+/* Scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border-strong);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-subtle);
+}

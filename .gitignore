@@ -1,0 +1,28 @@
+server/.env
+server/node_modules/
+
+client/.env
+client/.env.local
+client/.env.*.local
+client/node_modules/
+client/dist/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
