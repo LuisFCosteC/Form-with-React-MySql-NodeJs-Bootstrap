@@ -1,7 +1,7 @@
 {
   "name": "staffmatrix-server",
-  "version": "2.0.0",
-  "description": "StaffMatrix — Express + MySQL2 REST API for employee CRUD",
+  "version": "2.1.0",
+  "description": "StaffMatrix — Express + Turso (libSQL) REST API for employee CRUD",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
@@ -13,10 +13,10 @@
   "author": "Luis F. Coste C.",
   "license": "MIT",
   "dependencies": {
+    "@libsql/client": "^0.14.0",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
-    "express": "^4.19.2",
-    "mysql2": "^3.9.7"
+    "express": "^4.19.2"
   },
   "devDependencies": {
     "nodemon": "^3.1.0"
